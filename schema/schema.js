@@ -3,21 +3,7 @@ const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID , GraphQLInt,
 
 
 const Projects = require('../models/project');
-const Statuses = require('../models/status');
-
-// const projects = [
-//     { id: '1', name: 'Init Project', statusId: '2', budget: 1000 },
-//     { id: 2, name: 'Second Project', statusId: '4', budget: 200 },
-//     { id: 3, name: 'Third Project', statusId: '3', budget: 375 },
-//     { id: '4', name: 'Fourth Project', statusId: '1', budget: 17500 },
-// ]
-
-// const statuses = [
-//     { id: '1', name: 'not started' },
-//     { id: '2', name: 'in pprogress' },
-//     { id: '3', name: 'frozen' },
-//     { id: '4', name: 'finished' },
-// ]
+const Currencies = require('../models/currency');
 
 const ProjectType = new GraphQLObjectType({
     name: 'Project',
@@ -25,14 +11,17 @@ const ProjectType = new GraphQLObjectType({
         id: { type: GraphQLID },
         name: { type: GraphQLString },
         budget: { type: GraphQLInt },
-        status: {
-            type: StatusType,
+        // currencyId: { type: GraphQLID },
+        currency: {
+            type: CurrencyType,
             resolve(parent, args) {
                 // return statuses.find(status => status.id == parent.statusId);
-                return Statuses.findById(parent.statusId);
+                return Currencies.findById(parent.currencyId);
             }
         },
 
+
+        // statusId: { type: GraphQLID },
         // start: { type: GraphQLString },
         // deadline: { type: GraphQLString },
         // paid: { type: GraphQLString },
@@ -44,17 +33,12 @@ const ProjectType = new GraphQLObjectType({
     })
 })
 
-const StatusType = new GraphQLObjectType({
-    name: 'Status',
+const CurrencyType = new GraphQLObjectType({
+    name: 'Currency',
     fields: () => ({
         id: { type: GraphQLID },
         name: { type: GraphQLString },
-        // projects: {
-        //     type: new GraphQLList(ProjectType),
-        //     resolve(parent, args) {
-        //         return Projects.find({ statusId: parent.id })
-        //     }
-        // }
+        sign: { type: GraphQLString },
     })
 })
 
@@ -70,20 +54,26 @@ const Query = new GraphQLObjectType({
                 return Projects.findById(args.id);
             }
         },
-        status: {
-            type: StatusType,
-            args: { id: { type: GraphQLID } },
-            resolve(parent, args) {
-                // return statuses.find(status => status.id == args.id);
-                return Statuses.findById(args.id);
-            }
-        },
         projects: {
             type: new GraphQLList(ProjectType),
             resolve(parent, args) {
                 return Projects.find({});
             }
-        }
+        },
+        currencies: {
+            type: new GraphQLList(CurrencyType),
+            resolve(parent, args) {
+                return Currencies.find({});
+            }
+        },
+        currency: {
+            type: CurrencyType,
+            args: { id: { type: GraphQLID } },
+            resolve(parent, args) {
+                // return statuses.find(status => status.id == args.id);
+                return Currencies.findById(args.id);
+            }
+        },
     }
 })
 
