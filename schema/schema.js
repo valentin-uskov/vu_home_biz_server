@@ -4,6 +4,7 @@ const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID , GraphQLInt,
 
 const Projects = require('../models/project');
 const Currencies = require('../models/currency');
+const ProjectStatuses = require('../models/projectStatus');
 
 const ProjectType = new GraphQLObjectType({
     name: 'Project',
@@ -11,23 +12,24 @@ const ProjectType = new GraphQLObjectType({
         id: { type: GraphQLID },
         name: { type: GraphQLString },
         budget: { type: GraphQLInt },
-        // currencyId: { type: GraphQLID },
         currency: {
             type: CurrencyType,
             resolve(parent, args) {
-                // return statuses.find(status => status.id == parent.statusId);
                 return Currencies.findById(parent.currencyId);
             }
         },
+        projectStatus: { /* FIXME add to mongoDB and fix output  */
+            type: ProjectStatusType,
+            resolve(parent, args) {
+                return ProjectStatuses.findById(parent.projectStatusId);
+            }
+        },
 
-
-        // statusId: { type: GraphQLID },
+        // paidStatus
         // start: { type: GraphQLString },
         // deadline: { type: GraphQLString },
         // paid: { type: GraphQLString },
         // debt: { type: GraphQLString },
-        // currency: { type: GraphQLString },
-        // paid_status: { type: GraphQLString },
         // is_archive: { type: GraphQLString }
         // FIXME types. Now the all are strings!
     })
@@ -42,6 +44,13 @@ const CurrencyType = new GraphQLObjectType({
     })
 })
 
+const ProjectStatusType = new GraphQLObjectType({
+    name: 'ProjectStatus',
+    fields: () => ({
+        id: { type: GraphQLID },
+        name: { type: GraphQLString },
+    })
+})
 
 const Query = new GraphQLObjectType({
     name: 'Query',
@@ -72,6 +81,19 @@ const Query = new GraphQLObjectType({
             resolve(parent, args) {
                 // return statuses.find(status => status.id == args.id);
                 return Currencies.findById(args.id);
+            }
+        },
+        projectStatuses: {
+            type: new GraphQLList(ProjectStatusType),
+            resolve(parent, args) {
+                return ProjectStatuses.find({});
+            }
+        },
+        projectStatus: {
+            type: ProjectStatusType,
+            args: { id: { type: GraphQLID } },
+            resolve(parent, args) {
+                return ProjectStatuses.findById(args.id);
             }
         },
     }
