@@ -1,5 +1,5 @@
 const graphql = require('graphql');
-const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID , GraphQLInt, GraphQLList } = graphql;
+const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID , GraphQLInt, GraphQLList, GraphQLNonNull } = graphql;
 
 
 const Projects = require('../models/project');
@@ -10,8 +10,8 @@ const ProjectType = new GraphQLObjectType({
     name: 'Project',
     fields: () => ({
         id: { type: GraphQLID },
-        name: { type: GraphQLString },
-        budget: { type: GraphQLInt },
+        name: { type: new GraphQLNonNull(GraphQLString) },
+        budget: { type: new GraphQLNonNull(GraphQLInt) },
         currency: {
             type: CurrencyType,
             resolve(parent, args) {
@@ -35,13 +35,56 @@ const ProjectType = new GraphQLObjectType({
     })
 })
 
+
 const CurrencyType = new GraphQLObjectType({
     name: 'Currency',
     fields: () => ({
         id: { type: GraphQLID },
-        name: { type: GraphQLString },
-        sign: { type: GraphQLString },
+        name: { type: new GraphQLNonNull(GraphQLString) },
+        sign: { type: new GraphQLNonNull(GraphQLString) },
     })
+})
+
+const Mutation = new GraphQLObjectType({
+    name: 'Mutation',
+    fields: {
+        addCurrency: {
+            type: CurrencyType,
+            args: {
+                name: { type: new GraphQLNonNull(GraphQLString)},
+                sign: { type: new GraphQLNonNull(GraphQLString)},
+            },
+            resolve(parent, args) {
+                const currency = new Currencies({
+                    name: args.name,
+                    sign: args.sign,
+                });
+                return currency.save();
+            }
+        },
+        deleteCurrency: {
+            type: CurrencyType,
+            args: { id: { type: GraphQLID }},
+            resolve(parent, args) {
+                return Currencies.findByIdAndRemove(args.id);
+            }
+        },
+        updateCurrency: {
+            type: CurrencyType,
+            args: {
+                id: { type: GraphQLID },
+                name: { type: new GraphQLNonNull(GraphQLString) },
+                sign: { type: new GraphQLNonNull(GraphQLString) },
+            },
+            resolve(parent, args) {
+                return Currencies.findByIdAndUpdate(
+                    args.id,
+                    { $set: { name: args.name, sign: args.sign } },
+                    { new: true }
+                );
+            }
+        }
+    }
 })
 
 const ProjectStatusType = new GraphQLObjectType({
@@ -101,4 +144,5 @@ const Query = new GraphQLObjectType({
 
 module.exports = new GraphQLSchema({
     query: Query,
+    mutation: Mutation,
 })
