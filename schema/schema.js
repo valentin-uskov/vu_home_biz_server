@@ -48,38 +48,49 @@ const CurrencyType = new GraphQLObjectType({
 const Mutation = new GraphQLObjectType({
     name: 'Mutation',
     fields: {
-        addCurrency: {
-            type: CurrencyType,
+        addProject: {
+            type: ProjectType,
             args: {
-                name: { type: new GraphQLNonNull(GraphQLString)},
-                sign: { type: new GraphQLNonNull(GraphQLString)},
+                name: { type: new GraphQLNonNull(GraphQLString) },
+                budget: { type: GraphQLInt },
+                currencyId: { type: GraphQLString },
+                projectStatusId: { type: GraphQLString }
             },
             resolve(parent, args) {
-                const currency = new Currencies({
+                const project = new Projects({
                     name: args.name,
-                    sign: args.sign,
+                    budget: args.budget,
+                    currencyId: args.currencyId,
+                    projectStatusId: args.projectStatusId
                 });
-                return currency.save();
+                return project.save();
             }
         },
-        deleteCurrency: {
-            type: CurrencyType,
+        deleteProject: {
+            type: ProjectType,
             args: { id: { type: GraphQLID }},
             resolve(parent, args) {
-                return Currencies.findByIdAndRemove(args.id);
+                return Projects.findByIdAndRemove(args.id);
             }
         },
-        updateCurrency: {
-            type: CurrencyType,
+        updateProject: {
+            type: ProjectType,
             args: {
                 id: { type: GraphQLID },
                 name: { type: new GraphQLNonNull(GraphQLString) },
-                sign: { type: new GraphQLNonNull(GraphQLString) },
+                budget: { type: GraphQLInt },
+                currencyId: { type: GraphQLString },
+                projectStatusId: { type: GraphQLString }
             },
             resolve(parent, args) {
-                return Currencies.findByIdAndUpdate(
+                return Projects.findByIdAndUpdate(
                     args.id,
-                    { $set: { name: args.name, sign: args.sign } },
+                    { $set: {
+                        name: args.name,
+                        budget: args.budget,
+                        currencyId: args.currencyId,
+                        projectStatusId: args.projectStatusId
+                    } },
                     { new: true }
                 );
             }
