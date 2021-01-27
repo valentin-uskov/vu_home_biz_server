@@ -119,8 +119,9 @@ const Query = new GraphQLObjectType({
         },
         projects: {
             type: new GraphQLList(ProjectType),
-            resolve(parent, args) {
-                return Projects.find({});
+            args: { name: { type: GraphQLString } },
+            resolve(parent, { name }) {
+                return Projects.find({ name: { $regex: name, $options: "i" } });
             }
         },
         currencies: {
