@@ -4,8 +4,7 @@ const Schema = mongoose.Schema;
 const projectSchema = new Schema({
     name: String,
     budget: Number,
-    currencyId: String,
-    projectStatusId: String
+    currencyId: String
 });
 
 module.exports = mongoose.model('Project', projectSchema);
