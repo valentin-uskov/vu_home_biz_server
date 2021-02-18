@@ -44,12 +44,14 @@ const Mutation = new GraphQLObjectType({
         addProject: {
             type: ProjectType,
             args: {
+                id: { type: new GraphQLNonNull(GraphQLID) }, /* Only for REDUX version of APP */
                 name: { type: new GraphQLNonNull(GraphQLString) },
                 budget: { type: GraphQLInt },
                 currencyId: { type: GraphQLString },
             },
             resolve(parent, args) {
                 const project = new Projects({
+                    _id: args.id, /* Only for REDUX version of APP */
                     name: args.name,
                     budget: args.budget,
                     currencyId: args.currencyId,
