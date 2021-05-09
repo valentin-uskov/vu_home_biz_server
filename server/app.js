@@ -20,24 +20,42 @@ app.use('/graphql', graphqlHTTP({
 
 const seedDatabase = async dbConnection => {
     const currenciesCollection = mongoose.connection.collection('currencies');
-    if(await currenciesCollection.count() != 0) return;
 
-    console.log("Test data was added")
+    if (await currenciesCollection.countDocuments() === 0) {
 
-    await currenciesCollection.insertOne({
-        name: "USD",
-        sign: "$"
-    });
+        await currenciesCollection.insertOne({
+            name: "USD",
+            sign: "$"
+        });
 
-    await currenciesCollection.insertOne({
-        name: "EUR",
-        sign: "€"
-    });
+        await currenciesCollection.insertOne({
+            name: "EUR",
+            sign: "€"
+        });
 
-    await currenciesCollection.insertOne({
-        name: "UAH",
-        sign: "₴"
-    });
+        await currenciesCollection.insertOne({
+            name: "UAH",
+            sign: "₴"
+        });
+
+        console.log("Currencies was added");
+    }
+
+    const projectsCollection = mongoose.connection.collection('projects');
+
+    if (await projectsCollection.countDocuments() === 0) {
+        const Currency = mongoose.model('Currency');
+        const defaultCurrency = await Currency.findOne().sort({ $natural: 1 }).limit(1);
+
+        await projectsCollection.insertOne({
+            name: 'Initial project',
+            budget: 1000,
+            currencyId : defaultCurrency.id
+        });
+
+        console.log("Initial project was added");
+    }
+
 }
 
 const dbConnection = mongoose.connection;
