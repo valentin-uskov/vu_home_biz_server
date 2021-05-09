@@ -19,12 +19,11 @@ const ProjectType = new GraphQLObjectType({
         },
 
         // paidStatus
-        // start: { type: GraphQLString },
-        // deadline: { type: GraphQLString },
-        // paid: { type: GraphQLString },
-        // debt: { type: GraphQLString },
-        // is_archive: { type: GraphQLString }
-        // FIXME types. Now the all are strings!
+        // start
+        // deadline
+        // paid
+        // debt
+        // is_archive
     })
 })
 
