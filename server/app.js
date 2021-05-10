@@ -4,8 +4,7 @@ const schema = require('../schema/schema');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
- mongoose.connect(`mongodb+srv://vu_home_biz:h0Me20bU21v@cluster0.gk2m3.mongodb.net/home_biz?retryWrites=true&w=majority`, { useUnifiedTopology: true, useNewUrlParser: true });
-// mongoose.connect(`mongodb+srv://root:root@localhost/home_biz?retryWrites=true&w=majority`, { useUnifiedTopology: true, useNewUrlParser: true });
+mongoose.connect(`mongodb+srv://root:root@localhost/home_biz?retryWrites=true&w=majority`, { useUnifiedTopology: true, useNewUrlParser: true });
 
 const app = express();
 const PORT = 3005;
