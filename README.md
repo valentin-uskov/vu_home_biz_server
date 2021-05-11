@@ -1,11 +1,12 @@
 # vu_home_biz_server
-vu_home_biz_server is server for vu_home_biz
+The project is a server for [vu_home_biz app](https://github.com/valentin-uskov/vu_home_biz)
 
-##Start
-###To start the server you need:
+## Start
+### To start the server you need:
 1. Clone the repository
-1. In the app.js file on the 7th line replace the ```root:root``` with the password and login of the data base
-1. Enter ```yarn ran virgins``` command in the terminal and wait for a console message such as "Connected to DATA BASE"
+1. In the app.js file replace the 7th line with your connection string
+1. Run the ```yarn install``` command in the terminal to restore npm packages
+1. Run the ```yarn run dev``` command in the terminal and wait for a console message such as ```"Connected to DATA BASE"```
 
-##Tools
+## Tools
 Node.js, mongoose, graphQL
